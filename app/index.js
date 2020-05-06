@@ -51,10 +51,12 @@ module.exports = class extends Generator {
       this.templatePath("_tsconfig.json"),
       this.destinationPath("tsconfig.json")
     );
-    this.fs.copy(
-      this.templatePath("_.gitignore"),
-      this.destinationPath(".gitignore")
-    );
+    if(this.options.git) {
+        this.fs.copy(
+          this.templatePath("_.gitignore"),
+          this.destinationPath(".gitignore")
+        );
+    }
     this.fs.copy(
       this.templatePath("_readme.md"),
       this.destinationPath("readme.md")
