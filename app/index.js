@@ -19,23 +19,24 @@ module.exports = class extends Generator {
       optional: true,
       description: "Describe the name bound to the package.json",
     });
-
     this.option("install", {
       type: Boolean,
       optional: true,
       default: false,
-      description: "If this option is passed, run the npm install",
+      description: "Shortcut for the --install option",
     });
-    this.option("i", { type: Boolean, optional: true, default: false,
-        description: "Shortcut for the --install option"
+    this.option("run", {
+      type: Boolean,
+      optional: true,
+      default: false,
+      description: "Shortcut for the run option",
     });
-
-    this.option("run", { type: Boolean, optional: true, default: false,
-        description: "Run the hello world app example"
-    });
-    this.option("r", { type: Boolean, optional: true, default: false,
-        description : "Shortcut for the run option"
-    });
+    this.option("git", {
+      type: Boolean,
+      optional: true,
+      default: false,
+      description: "Shortcut for gitinit"
+    })
   }
   writing() {
     this.fs.copy(this.templatePath("src"), this.destinationPath("src"));
@@ -60,19 +61,24 @@ module.exports = class extends Generator {
     );
   }
   install() {
-    if (this.options.i || this.options.install) {
+    if (this.options.install) {
       this.log("Running npm install");
       this.npmInstall();
     }
   }
   end() {
-    if (this.options.r || this.options.run) {
-        if(!this.options.i || !this.options.install){
-            this.log("Running npm install");
-            this.spawnCommandSync("npm install");
-        }
-        this.log("Running the application");
-        this.spawnCommandSync("npm run clean && npm run start");
+    if(this.options.git)
+    {
+      this.log("Initializing local git repo");
+      this.spawnCommandSync("git init");
+    }
+    if (this.options.run) {
+      if (!(this.options.install)) {
+        this.log("Running npm install");
+        this.spawnCommandSync("npm install");
+      }
+      this.log("Running the application");
+      this.spawnCommandSync("npm run clean && npm run start");
     }
   }
 };
